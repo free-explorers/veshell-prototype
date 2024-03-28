@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use serde::ser::SerializeStruct;
 use serde::Serialize;
 use smithay::output::{Mode, Output, PhysicalProperties};
@@ -23,6 +24,7 @@ pub struct SurfaceMessage {
 pub enum SurfaceRole {
     XdgSurface(XdgSurfaceMessage),
     Subsurface(SubsurfaceMessage),
+    X11Surface,
 }
 
 #[derive(Debug, Serialize)]
@@ -66,6 +68,26 @@ pub struct PopupMessage {
 #[serde(rename_all = "camelCase")]
 pub struct MonitorsMessage {
     pub monitors: Vec<MyOutput>,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NewX11Surface {
+    pub x11_surface_id: u64,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MapX11Surface {
+    pub x11_surface_id: u64,
+    pub surface_id: u64,
+    pub override_redirect: bool,
+    pub geometry: MyRectangle<i32, Logical>,
+    pub parent: Option<u64>,
+    pub title: String,
+    pub window_class: String,
+    pub instance: String,
+    pub startup_id: Option<String>,
 }
 
 #[repr(transparent)]
@@ -235,4 +257,10 @@ impl Serialize for MyPhysicalProperties {
         state.serialize_field("model", &properties.model)?;
         state.end()
     }
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EnvironmentVariables<'k, 'v> {
+    pub environment_variables: HashMap<&'k str, Option<&'v str>>,
 }

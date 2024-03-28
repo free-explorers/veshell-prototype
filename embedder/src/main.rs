@@ -23,7 +23,7 @@ use smithay::{
 use crate::flutter_engine::platform_channels::binary_messenger::BinaryMessenger;
 use crate::flutter_engine::FlutterEngine;
 use crate::mouse_button_tracker::MouseButtonTracker;
-use crate::server_state::ServerState;
+use crate::server::ServerState;
 
 mod cursor;
 mod drm_backend;
@@ -32,9 +32,10 @@ mod gles_framebuffer_importer;
 mod input_handling;
 mod keyboard;
 mod mouse_button_tracker;
-mod server_state;
+mod server;
 mod texture_swap_chain;
 mod x11_client;
+mod focus;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     if let Ok(env_filter) = tracing_subscriber::EnvFilter::try_from_default_env() {
